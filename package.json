@@ -1,0 +1,24 @@
+{
+  "name": "ride-hailing-project-x",
+  "version": "1.0.0",
+  "description": "Ride hailing application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/veecodes14/Ride-Hailing-Project-x.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/veecodes14/Ride-Hailing-Project-x/issues"
+  },
+  "homepage": "https://github.com/veecodes14/Ride-Hailing-Project-x#readme",
+  "devDependencies": {
+    "@types/node": "^24.0.8",
+    "typescript": "^5.8.3"
+  }
+}
