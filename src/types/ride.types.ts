@@ -1,0 +1,1 @@
+export type RideStatus = 'pending' | 'accepted' | 'in_progress' | 'completed';
