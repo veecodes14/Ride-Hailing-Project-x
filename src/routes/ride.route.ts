@@ -4,10 +4,11 @@ import {requestRide, getPendingRides, acceptRide, startRide, completeRide} from 
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { authorizedRoles } from "../middlewares/roles.middleware";
 
-
-//@route POST /api/v1/rides/request
-//@desc Rider Request ride(rider only)
-//@access Private
+/**
+ * @route POST /api/v1/rides/request
+ * @desc Rider Request ride(rider only)
+ * @access Private
+ */
 router.post('/request', authMiddleware, authorizedRoles("rider"), requestRide);
 
 //@route GET /api/v1/rides/pending

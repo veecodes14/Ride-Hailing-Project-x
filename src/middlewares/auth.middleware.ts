@@ -17,7 +17,7 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
             return;
         }
 
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string, (error, user) => {
+        jwt.verify(token, process.env.JWT_SECRET as string, (error, user) => {
             if (error) {
                 res.status(403).json({
                     success: false,

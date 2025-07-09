@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Ride } from '../models/ride.model';
 import { AuthRequest } from '../types/authRequest';
 import { Schema, Types } from 'mongoose';
+import { User} from '../models/user.model';
 
 //@route POST /api/v1/rides/request
 //@desc Rider Request ride(rider only)
@@ -10,7 +11,7 @@ import { Schema, Types } from 'mongoose';
 export const requestRide = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const { pickUpLocation, dropOffLocation } = req.body;
-        const userId = req.user?.userId
+        const userId = req.user?.id
 
         if(!pickUpLocation || !dropOffLocation) {
             res.status(400).json({
@@ -20,11 +21,14 @@ export const requestRide = async (req: AuthRequest, res: Response): Promise<void
             return;
         }
 
+        const rider = await User.findById(userId).select('-password -__v');
+        console.log(rider)
+
         const ride = await Ride.create(
             {
                 pickUpLocation: pickUpLocation,
                 dropOffLocation: dropOffLocation,
-                rider: userId,
+                rider: rider?._id,
 
             }
         )
@@ -47,7 +51,7 @@ export const requestRide = async (req: AuthRequest, res: Response): Promise<void
 
 export const getPendingRides = async(req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const userId = req.user?.userId;
+        const userId = req.user?.id;
 
         if(!userId) {
             res.status(401).json({
@@ -56,8 +60,11 @@ export const getPendingRides = async(req: AuthRequest, res: Response): Promise<v
             });
         }
 
+        const rider = await User.findById(userId).select('-password -__v');
+        console.log(rider)
+
         const rides = await Ride.find({
-            rider: userId,
+            // rider: rider?._id,
             status: "pending"
         }).select('-createdAt -updatedAt -__v')
 
@@ -80,7 +87,7 @@ export const getPendingRides = async(req: AuthRequest, res: Response): Promise<v
 export const acceptRide = async(req: AuthRequest, res: Response): Promise<void> => {
     try{
         const rideId = req.params.id;
-        const userId = req.user?.userId;
+        const userId = req.user?.id;
 
         if(!rideId || !userId) {
             res.status(400).json({
@@ -122,7 +129,7 @@ export const acceptRide = async(req: AuthRequest, res: Response): Promise<void> 
 export const startRide = async(req: AuthRequest, res: Response): Promise<void> => {
     try {
         const rideId = req.params.id;
-        const userId = req.user?.userId;
+        const userId = req.user?.id;
 
         if(!rideId || !userId) {
             res.status(400).json({
@@ -163,7 +170,7 @@ export const startRide = async(req: AuthRequest, res: Response): Promise<void> =
 export const completeRide = async(req: AuthRequest, res: Response): Promise<void> => {
     try {
         const rideId = req.params.id;
-        const userId = req.user?.userId;
+        const userId = req.user?.id;
         if(!rideId || !userId) {
             res.status(400).json({
                 success: false,

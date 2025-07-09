@@ -7,12 +7,13 @@ require('dotenv').config;
 
 export const userData = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const userId = req.user?.userId;
+        const userId = req.user?.id;
 
         if (!userId) {
             res.status(401).json({success: false, message: "Unauthorized"})
             return;
         }
+
 
         const user = await User.findById(userId).select('-password -__v');
         if (!user) {
@@ -22,6 +23,7 @@ export const userData = async (req: AuthRequest, res: Response): Promise<void> =
             });
             return;
         }
+
 
         res.status(200).json({
             success: true,
@@ -37,7 +39,7 @@ export const userData = async (req: AuthRequest, res: Response): Promise<void> =
 
 export const updateProfile = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const userId = req.user?.userId;
+        const userId = req.user?.id;
         if (!userId) {
             res.status(401).json({success: false, message: "Unauthorized"})
             return;
@@ -76,7 +78,7 @@ export const updateProfile = async (req: AuthRequest, res: Response): Promise<vo
 
 export const changePassword = async (req: AuthRequest, res: Response): Promise <void> => {
     try {
-        const userId = req.user?.userId;
+        const userId = req.user?.id;
         if (!userId) {
             res.status(401).json({success: false, message: "Unauthorized"})
             return;
@@ -136,7 +138,7 @@ export const changePassword = async (req: AuthRequest, res: Response): Promise <
 
 export const deleteAccount = async(req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const userId = req.user?.userId;
+        const userId = req.user?.id;
         if (!userId) {
             res.status(401).json({success: false, message: "Unauthorized"})
             return;

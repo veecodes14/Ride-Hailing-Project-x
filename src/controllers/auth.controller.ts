@@ -14,7 +14,7 @@ require('dotenv').config();
 const { JWT_SECRET } = process.env;
 
 if (!JWT_SECRET) {
-    throw new Error('ACCESS_TOKEN_SECRET is not defined in .env');
+    throw new Error('JWT_SECRET is not defined in .env');
 }
 
 
@@ -25,10 +25,10 @@ if (!JWT_SECRET) {
 //@access Public
 export const register = async (req: Request, res: Response):Promise<void> => {
     try {
-        const { name, gender, email, phone, password } = req.body as { name: string; gender: string; email: string; phone: string; password: string; }
+        const { name, gender, role, email, phone, password } = req.body as { name: string; gender: string; role: string; email: string; phone: string; password: string; }
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newUser = new User({name, gender, email, phone, password: hashedPassword })
+        const newUser = new User({name, gender, email, role, phone, password: hashedPassword })
         await newUser.save();
         res.status(201).json({message: `User, ${name} registered`})
 
@@ -60,7 +60,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         }
 
         const token = jwt.sign(
-            { id: existingUser?._id},
+            { id: existingUser?._id, role: existingUser?.role},
             process.env.JWT_SECRET!,
             {expiresIn: "1h"}
         )

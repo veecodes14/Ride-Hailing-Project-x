@@ -3,7 +3,6 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import cors from 'cors';
-import mongoose from 'mongoose';
 import connectDB from './config/dbConnect';
 import rootRouter from './routes/index.route';
 

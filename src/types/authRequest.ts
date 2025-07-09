@@ -3,14 +3,15 @@ import { JwtPayload } from 'jsonwebtoken';
 
 export interface AuthRequest extends Request {
     user?: {
-        userId: string;
+        id: string;
         email?: string;
         role?: string;
     }
 }
 
 export interface CustomJwtPayload extends JwtPayload {
-    userId: string;
+    id: string;
+    role?: string;
     iat?: number;
     exp?: number;
 }
