@@ -25,10 +25,21 @@ if (!JWT_SECRET) {
 //@access Public
 export const register = async (req: Request, res: Response):Promise<void> => {
     try {
-        const { name, gender, role, email, phone, password } = req.body as { name: string; gender: string; role: string; email: string; phone: string; password: string; }
+        const { name, gender, role, email, phone, password } = req.body 
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        const existingUser = await User.findOne({email})
+        
+        if (existingUser) {
+            res.status(404).json({
+                success: false,
+                message: "User already exists"
+            })
+
+        } 
+
         const newUser = new User({name, gender, email, role, phone, password: hashedPassword })
+        
         await newUser.save();
         res.status(201).json({message: `User, ${name} registered`})
 
@@ -38,6 +49,9 @@ export const register = async (req: Request, res: Response):Promise<void> => {
     }
 }
 
+//@route POST /api/v1/auth/login
+//@desc Login User (Login User and Generate JWT)
+//@access Public
 export const login = async (req: Request, res: Response): Promise<void> => {
     try { 
         const {email, password} = req.body;
@@ -76,7 +90,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             data: UserWithoutPassword
         })
     } catch (err) {
-        res.status(500).json({ message: "Something went wrong"})
+        res.status(500).json({ message: "Something went wrong"}) 
     }
 };
 
@@ -120,7 +134,7 @@ export const forgotPassword = async (req: Request, res: Response): Promise<void>
  If you did not request this, please ignore this email or contact support.
         
  Best Regards,  
- AAOBA Support Team`;
+ MOBI-X Support Team`;
 
         await sendEmail({
             email: user.email,

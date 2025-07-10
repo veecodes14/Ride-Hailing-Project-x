@@ -22,7 +22,7 @@ export const requestRide = async (req: AuthRequest, res: Response): Promise<void
         }
 
         const rider = await User.findById(userId).select('-password -__v');
-        console.log(rider)
+        // console.log(rider)
 
         const ride = await Ride.create(
             {
@@ -60,8 +60,8 @@ export const getPendingRides = async(req: AuthRequest, res: Response): Promise<v
             });
         }
 
-        const rider = await User.findById(userId).select('-password -__v');
-        console.log(rider)
+        const driver = await User.findById(userId).select('-password -__v');
+        console.log(driver)
 
         const rides = await Ride.find({
             // rider: rider?._id,
@@ -105,6 +105,7 @@ export const acceptRide = async(req: AuthRequest, res: Response): Promise<void> 
             });
             return;
         }
+        
             ride.status = 'accepted';
             ride.driver = userId as any;
             await ride.save();

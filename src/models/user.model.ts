@@ -18,7 +18,7 @@ const UserSchema: Schema = new Schema<IUser>({
     gender: {type: String, required: true},
     email: {type: String, required: true, unique: true},
     phone: {type: Number, required: true, unique: true},
-    password: { type: String, required: true, unique: true},
+    password: { type: String, required: true, unique: true, select: false},
     role:{type: String, enum: ['rider', 'driver'], default: 'rider'},
     passwordChangedAt:{type: Date},
     isAccountDeleted: {type: Boolean, default: false},
