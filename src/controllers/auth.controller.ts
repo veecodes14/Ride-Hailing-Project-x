@@ -19,10 +19,11 @@ if (!JWT_SECRET) {
 
 
 
-
+/** 
 //@route POST /api/v1/auth/register
 //@desc Sign Up User (Create User and Hash Password)
 //@access Public
+*/
 export const register = async (req: Request, res: Response):Promise<void> => {
     try {
         const { name, gender, role, email, phone, password } = req.body 
@@ -48,10 +49,11 @@ export const register = async (req: Request, res: Response):Promise<void> => {
         res.status(500).json({ success: false, error: "Internal Server Error" });
     }
 }
-
+/** 
 //@route POST /api/v1/auth/login
 //@desc Login User (Login User and Generate JWT)
 //@access Public
+*/
 export const login = async (req: Request, res: Response): Promise<void> => {
     try { 
         const {email, password} = req.body;
@@ -154,10 +156,11 @@ export const forgotPassword = async (req: Request, res: Response): Promise<void>
         return
     }
 }
-
+/** 
 //Controller for verifying OTP
 //POST /api/v1/auth/otp/verify
 //@public
+*/
 export const verifyOTP = async (req: Request, res: Response): Promise<void> => {
     try {
         const { otp } = req.body;
@@ -212,8 +215,10 @@ export const verifyOTP = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
+/** 
 //Controller for resetting password
 //PUT /api/v1/auth/otp/reset
+*/
 export const resetPassword = async (req: Request, res: Response): Promise<void> => {
     try {
         const { newPassword } = req.body;

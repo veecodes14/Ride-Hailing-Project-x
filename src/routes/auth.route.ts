@@ -8,10 +8,10 @@ import { otpRequestLimiter, otpVerifyLimiter } from '../middlewares/otpLimiter.m
  * @swagger
  * /api/v1/auth/register:
  *   post:
+ *     summary: Register a new user
+ *     description: Creates a new user with hashed password and saves to the database.
  *     tags:
- *       - Authentication
- *     summary: Sign Up User
- *     description: Creates a new user account with a hashed password. If the email already exists and the account was deleted, it restores the account.
+ *       - Auth
  *     requestBody:
  *       required: true
  *       content:
@@ -19,34 +19,64 @@ import { otpRequestLimiter, otpVerifyLimiter } from '../middlewares/otpLimiter.m
  *           schema:
  *             type: object
  *             required:
- *               - fullName
- *               - userName
- *               - studentStatus
+ *               - name
+ *               - gender
+ *               - role
  *               - email
+ *               - phone
  *               - password
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: John Doe
+ *               gender:
+ *                 type: string
+ *                 example: male
+ *               role:
+ *                 type: string
+ *                 example: rider
+ *               email:
+ *                 type: string
+ *                 example: johndoe@example.com
+ *               phone:
+ *                 type: string
+ *                 example: "+1234567890"
+ *               password:
+ *                 type: string
+ *                 example: MySecurePassword123
  *     responses:
  *       201:
  *         description: User registered successfully
- *       200:
- *         description: Account restored successfully
- *       400:
- *         description: Bad Request - missing fields or user already exists
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "User, John Doe registered"
+ *       404:
+ *         description: User already exists
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: false
+ *               message: "User already exists"
  *       500:
- *         description: Internal Server Error
+ *         description: Internal server error
  */
+
+/** 
 //@route POST /api/v1/auth/register
 //@desc Creates a new user
 //@access public
+*/
 router.post('/register', register);
 
 /**
  * @swagger
  * /api/v1/auth/login:
  *   post:
+ *     summary: Login user
+ *     description: Authenticates a user and returns a JWT token.
  *     tags:
- *       - Authentication
- *     summary: Log In User
- *     description: Authenticates a user and returns a JWT access token.
+ *       - Auth
  *     requestBody:
  *       required: true
  *       content:
@@ -59,49 +89,50 @@ router.post('/register', register);
  *             properties:
  *               email:
  *                 type: string
- *                 format: email
- *                 example: "jane.doe@example.com"
+ *                 example: johndoe@example.com
  *               password:
  *                 type: string
- *                 format: password
- *                 example: "SecurePass123!"
+ *                 example: MySecurePassword123
  *     responses:
  *       200:
- *         description: User logged in successfully
+ *         description: Login successful
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 accessToken:
- *                   type: string
- *                 data:
- *                   type: object
- *                   description: User profile (excluding password)
+ *             example:
+ *               success: true
+ *               message: "Passenger logged in successfully"
+ *               token: "eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+ *               data:
+ *                 _id: "64b0c0f3e934b8..."
+ *                 name: "John Doe"
+ *                 email: "johndoe@example.com"
+ *                 role: "rider"
+ *                 phone: "+1234567890"
  *       400:
- *         description: Invalid credentials or missing fields
- *       404:
- *         description: Account has been deleted
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: false
+ *               message: "All fields are required"
  *       500:
- *         description: Internal Server Error
+ *         description: Internal server error
  */
+/** 
 //@route POST /api/v1/auth/login
 //@desc Login a user
 //@access public
+*/
 router.post('/login', login);
 
 /**
  * @swagger
  * /api/v1/auth/forgot-password:
  *   post:
+ *     summary: Request password reset OTP
+ *     description: Sends a one-time password (OTP) to the user's email for resetting their password.
  *     tags:
- *       - Authentication
- *     summary: Request OTP for Password Reset
- *     description: Sends a 4-digit OTP to the user's registered email if the email exists.
+ *       - Auth
  *     requestBody:
  *       required: true
  *       content:
@@ -113,38 +144,40 @@ router.post('/login', login);
  *             properties:
  *               email:
  *                 type: string
- *                 format: email
- *                 example: "jane.doe@example.com"
+ *                 example: johndoe@example.com
  *     responses:
  *       200:
- *         description: OTP sent (if user exists)
+ *         description: OTP request handled
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
+ *             example:
+ *               success: true
+ *               message: "A password reset OTP has been sent to your email. Please check your inbox."
  *       400:
- *         description: Email not provided
+ *         description: Missing or invalid email
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: false
+ *               message: "Email is required to reset your password"
  *       500:
- *         description: Internal Server Error
+ *         description: Internal server error
  */
+/** 
 //@route POST /api/v1/auth/forgot-password
-//@desc reset password when not logged in
+//@desc Forgot Password - Request OTP
 //@access public
-router.post('/forgot-password', otpRequestLimiter, forgotPassword)
+*/
+router.post('/forgot-password', otpRequestLimiter, forgotPassword);
 
 /**
  * @swagger
  * /api/v1/auth/otp/verify:
  *   post:
+ *     summary: Verify OTP for password reset
+ *     description: Verifies the OTP sent to the user and generates a temporary token for password reset.
  *     tags:
- *       - Authentication
- *     summary: Verify OTP Code
- *     description: Verifies the 4-digit OTP code sent to the user's email and returns a temporary token for password reset.
+ *       - Auth
  *     requestBody:
  *       required: true
  *       content:
@@ -156,32 +189,39 @@ router.post('/forgot-password', otpRequestLimiter, forgotPassword)
  *             properties:
  *               otp:
  *                 type: string
- *                 example: "1234"
+ *                 example: "123456"
  *     responses:
  *       200:
- *         description: OTP verified, temp token issued
+ *         description: OTP verified successfully
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 tempToken:
- *                   type: string
- *                   description: Token to use in Authorization header for resetting password
+ *             example:
+ *               success: true
+ *               message: "OTP verified successfully. You can now reset your password."
+ *               tempToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6..."
  *       400:
- *         description: Invalid or missing OTP
+ *         description: Invalid or expired OTP
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: false
+ *               message: "Invalid OTP"
  *       401:
- *         description: Expired OTP
+ *         description: OTP expired
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: false
+ *               message: "OTP has expired. Request a new one."
  *       500:
- *         description: Internal Server Error
+ *         description: Internal server error
  */
+
+/** 
 //@route POST /api/v1/auth/otp/verify
 //@desc Verify Forgot Password OTP
 //@access public
+*/
 router.post('/otp/verify', otpVerifyLimiter, verifyOTP)
 
 /**
@@ -228,9 +268,11 @@ router.post('/otp/verify', otpVerifyLimiter, verifyOTP)
  *       500:
  *         description: Internal Server Error
  */
+/** 
 //@route PUT /api/v1/auth/otp/reset
 //@desc Reset password
 //@access public
+*/
 router.put('/otp/reset', resetPassword)
 
 

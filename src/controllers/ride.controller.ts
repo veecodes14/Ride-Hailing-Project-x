@@ -101,7 +101,7 @@ export const acceptRide = async(req: AuthRequest, res: Response): Promise<void> 
         if(!ride || ride.status !== 'pending') {
             res.status(404).json({
                 success: false,
-                messge: "Ride not available at this time"
+                message: "Ride not available at this time"
             });
             return;
         }

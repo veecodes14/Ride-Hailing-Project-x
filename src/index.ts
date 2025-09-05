@@ -5,6 +5,8 @@ import helmet from 'helmet';
 import cors from 'cors';
 import connectDB from './config/dbConnect';
 import rootRouter from './routes/index.route';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './swagger.config';
 
 connectDB()
 dotenv.config()
