@@ -6,9 +6,9 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Space Mission Control API',
+      title: 'Ride Hailing API',
       version: '1.0.0',
-      description: 'API documentation for managing users, missions, and rockets',
+      description: 'API documentation for managing drivers, riders, and rides',
     },
     servers: [
       {
@@ -16,7 +16,7 @@ const options = {
         description: 'Development server',
       },
       {
-        url: '',
+        url: 'https://ride-hailing-project-x-1.onrender.com',
         description: 'Live server',
       }
     ],
