@@ -1,10 +1,10 @@
 import express from "express";
 const router = express.Router();
 import {
-    changePassword,
-    deleteAccount,
-    updateProfile,
-    userData,
+  changePassword,
+  deleteAccount,
+  updateProfile,
+  userData,
 } from "../controllers/user.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { authorizedRoles } from "../middlewares/roles.middleware";
@@ -45,30 +45,20 @@ import { authorizedRoles } from "../middlewares/roles.middleware";
  *                     role:
  *                       type: string
  *                       example: "Applicant"
- *                       isAccountDeleted:
- *                        type: boolean
- *                        example: false
+ *                     isAccountDeleted:
+ *                       type: boolean
+ *                       example: false
  *       401:
  *         description: Unauthorized, missing or invalid token.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: "Unauthorized"
  *       500:
  *         description: Internal Server Error.
  */
-//@route GET /api/v1/status/profile
-//@desc Get Data/Profile/Details of Logged-in user (Get your own profile)
-//@access private
-router.get('/profile', authMiddleware, authorizedRoles("rider", "driver"), userData)
-
+router.get(
+  "/profile",
+  authMiddleware,
+  authorizedRoles("rider", "driver"),
+  userData
+);
 
 /**
  * @swagger
@@ -95,7 +85,7 @@ router.get('/profile', authMiddleware, authorizedRoles("rider", "driver"), userD
  *                 type: string
  *               occupation:
  *                 type: string
- *               About:
+ *               about:
  *                 type: string
  *               profileImage:
  *                 type: string
@@ -106,7 +96,7 @@ router.get('/profile', authMiddleware, authorizedRoles("rider", "driver"), userD
  *               affiliatedGroups:
  *                 type: array
  *                 items:
- *                     type: string
+ *                   type: string
  *     responses:
  *       200:
  *         description: User profile updated successfully.
@@ -129,10 +119,12 @@ router.get('/profile', authMiddleware, authorizedRoles("rider", "driver"), userD
  *       500:
  *         description: Internal Server Error
  */
-//@route PUT /api/v1/status/profile
-//@desc Update profile (fullName, userName, profileImage/avatar, bio/About, etc.)
-//@access private
-router.put('/profile', authMiddleware, authorizedRoles("rider", "driver"), updateProfile);
+router.put(
+  "/profile",
+  authMiddleware,
+  authorizedRoles("rider", "driver"),
+  updateProfile
+);
 
 /**
  * @swagger
@@ -170,10 +162,12 @@ router.put('/profile', authMiddleware, authorizedRoles("rider", "driver"), updat
  *             schema:
  *               type: object
  *               properties:
- *               success:
+ *                 success:
  *                   type: boolean
+ *                   example: true
  *                 message:
  *                   type: string
+ *                   example: "Password updated successfully."
  *       400:
  *         description: Validation or password mismatch error
  *       401:
@@ -183,10 +177,12 @@ router.put('/profile', authMiddleware, authorizedRoles("rider", "driver"), updat
  *       500:
  *         description: Internal Server Error
  */
-//@route PUT /api/v1/status/update/password
-//@desc Change password (when logged in)
-//@access private
-router.put('/update/password', authMiddleware, authorizedRoles("rider", "driver"), changePassword);
+router.put(
+  "/update/password",
+  authMiddleware,
+  authorizedRoles("rider", "driver"),
+  changePassword
+);
 
 /**
  * @swagger
@@ -206,10 +202,12 @@ router.put('/update/password', authMiddleware, authorizedRoles("rider", "driver"
  *             schema:
  *               type: object
  *               properties:
- *                  success:
+ *                 success:
  *                   type: boolean
+ *                   example: true
  *                 message:
  *                   type: string
+ *                   example: "Account deleted successfully."
  *       401:
  *         description: Unauthorized
  *       404:
@@ -217,11 +215,11 @@ router.put('/update/password', authMiddleware, authorizedRoles("rider", "driver"
  *       500:
  *         description: Internal Server Error
  */
-//@route DELETE	/api/v1/status/account/delete
-//@desc Deactivate/Delete account (Soft Delete)
-//@access private
-router.delete('/account/delete', authMiddleware, authorizedRoles("rider","driver"), deleteAccount);
-
-
+router.delete(
+  "/account/delete",
+  authMiddleware,
+  authorizedRoles("rider", "driver"),
+  deleteAccount
+);
 
 export default router;
